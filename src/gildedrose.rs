@@ -1,5 +1,9 @@
 use std::fmt::{self, Display};
 
+const AGED_BRIE: &str = "Aged Brie";
+const BACKSTAGE_PASSES: &str = "Backstage passes to a TAFKAL80ETC concert";
+const SULFURAS: &str = "Sulfuras, Hand of Ragnaros";
+
 pub struct Item {
     pub name: String,
     pub sell_in: i32,
@@ -33,11 +37,9 @@ impl GildedRose {
 
     pub fn update_quality(&mut self) {
         for i in 0..self.items.len() {
-            if self.items[i].name != "Aged Brie"
-                && self.items[i].name != "Backstage passes to a TAFKAL80ETC concert"
-            {
+            if self.items[i].name != AGED_BRIE && self.items[i].name != BACKSTAGE_PASSES {
                 if self.items[i].quality > 0 {
-                    if self.items[i].name != "Sulfuras, Hand of Ragnaros" {
+                    if self.items[i].name != SULFURAS {
                         self.items[i].quality = self.items[i].quality - 1;
                     }
                 }
@@ -45,7 +47,7 @@ impl GildedRose {
                 if self.items[i].quality < 50 {
                     self.items[i].quality = self.items[i].quality + 1;
 
-                    if self.items[i].name == "Backstage passes to a TAFKAL80ETC concert" {
+                    if self.items[i].name == BACKSTAGE_PASSES {
                         if self.items[i].sell_in < 11 {
                             if self.items[i].quality < 50 {
                                 self.items[i].quality = self.items[i].quality + 1;
@@ -61,15 +63,15 @@ impl GildedRose {
                 }
             }
 
-            if self.items[i].name != "Sulfuras, Hand of Ragnaros" {
+            if self.items[i].name != SULFURAS {
                 self.items[i].sell_in = self.items[i].sell_in - 1;
             }
 
             if self.items[i].sell_in < 0 {
-                if self.items[i].name != "Aged Brie" {
-                    if self.items[i].name != "Backstage passes to a TAFKAL80ETC concert" {
+                if self.items[i].name != AGED_BRIE {
+                    if self.items[i].name != BACKSTAGE_PASSES {
                         if self.items[i].quality > 0 {
-                            if self.items[i].name != "Sulfuras, Hand of Ragnaros" {
+                            if self.items[i].name != SULFURAS {
                                 self.items[i].quality = self.items[i].quality - 1;
                             }
                         }

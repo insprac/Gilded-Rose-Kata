@@ -90,6 +90,8 @@ impl GildedRose {
 
 #[cfg(test)]
 mod tests {
+    use crate::gildedrose::{BACKSTAGE_PASSES, SULFURAS};
+
     use super::{AGED_BRIE, GildedRose, Item};
 
     const DEX_VEST: &str = "+5 Dexterity Vest";
@@ -133,5 +135,78 @@ mod tests {
         gilded_rose.update_quality();
 
         assert_eq!(gilded_rose.items[0].quality, 50);
+    }
+
+    #[test]
+    fn quality_decreases_2x_past_sell_date() {
+        let item = Item::new(DEX_VEST, 0, 30);
+        let mut gilded_rose = GildedRose::new(vec![item]);
+
+        gilded_rose.update_quality();
+
+        assert_eq!(gilded_rose.items[0].quality, 28);
+    }
+
+    #[test]
+    fn aged_brie_quality_increases_with_time() {
+        let item = Item::new(AGED_BRIE, 10, 30);
+        let mut gilded_rose = GildedRose::new(vec![item]);
+
+        gilded_rose.update_quality();
+
+        assert_eq!(gilded_rose.items[0].quality, 31);
+    }
+
+    #[test]
+    fn sulfuras_quality_never_changes() {
+        let item = Item::new(SULFURAS, 10, 80);
+        let mut gilded_rose = GildedRose::new(vec![item]);
+
+        gilded_rose.update_quality();
+
+        assert_eq!(gilded_rose.items[0].quality, 80);
+    }
+
+    #[test]
+    fn backstage_pass_quality_increments_more_than_10_days() {
+        let item = Item::new(BACKSTAGE_PASSES, 11, 10);
+        let mut gilded_rose = GildedRose::new(vec![item]);
+
+        gilded_rose.update_quality();
+
+        assert_eq!(gilded_rose.items[0].quality, 11);
+    }
+
+    #[test]
+    fn backstage_pass_quality_increases_2x_within_10_days() {
+        let item = Item::new(BACKSTAGE_PASSES, 10, 10);
+        let mut gilded_rose = GildedRose::new(vec![item]);
+
+        gilded_rose.update_quality();
+        assert_eq!(gilded_rose.items[0].quality, 12);
+
+        gilded_rose.update_quality();
+        assert_eq!(gilded_rose.items[0].quality, 14);
+    }
+
+    #[test]
+    fn backstage_pass_quality_increases_3x_less_than_5_days() {
+        let item = Item::new(BACKSTAGE_PASSES, 5, 10);
+        let mut gilded_rose = GildedRose::new(vec![item]);
+
+        gilded_rose.update_quality();
+        assert_eq!(gilded_rose.items[0].quality, 13);
+
+        gilded_rose.update_quality();
+        assert_eq!(gilded_rose.items[0].quality, 16);
+    }
+
+    #[test]
+    fn backstage_pass_quality_0_after_sell_date() {
+        let item = Item::new(BACKSTAGE_PASSES, 0, 10);
+        let mut gilded_rose = GildedRose::new(vec![item]);
+
+        gilded_rose.update_quality();
+        assert_eq!(gilded_rose.items[0].quality, 0);
     }
 }

@@ -66,9 +66,7 @@ impl GildedRose {
                 }
             }
 
-            item.sell_in -= 1;
-
-            if item.sell_in < 0 {
+            if item.sell_in <= 0 {
                 if item.name != AGED_BRIE {
                     if item.name != BACKSTAGE_PASSES {
                         if item.quality > 0 {
@@ -85,6 +83,8 @@ impl GildedRose {
                     }
                 }
             }
+
+            item.sell_in -= 1;
         }
     }
 }

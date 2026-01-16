@@ -158,6 +158,16 @@ mod tests {
     }
 
     #[test]
+    fn aged_brie_quality_increases_2x_after_sell_date() {
+        let item = Item::new(AGED_BRIE, 0, 30);
+        let mut gilded_rose = GildedRose::new(vec![item]);
+
+        gilded_rose.update_quality();
+
+        assert_eq!(gilded_rose.items[0].quality, 32);
+    }
+
+    #[test]
     fn sulfuras_quality_never_changes() {
         let item = Item::new(SULFURAS, 10, 80);
         let mut gilded_rose = GildedRose::new(vec![item]);

@@ -34,14 +34,20 @@ pub enum ItemKind {
     Legendary,
 }
 
-impl From<Item> for ItemKind {
-    fn from(item: Item) -> Self {
+impl From<&Item> for ItemKind {
+    fn from(item: &Item) -> Self {
         match item.name.as_str() {
             AGED_BRIE => Self::Aging,
             BACKSTAGE_PASSES => Self::Pass,
             SULFURAS => Self::Legendary,
             _ => Self::Normal,
         }
+    }
+}
+
+impl From<&mut Item> for ItemKind {
+    fn from(item: &mut Item) -> Self {
+        (&*item).into()
     }
 }
 
@@ -56,42 +62,45 @@ impl GildedRose {
 
     pub fn update_quality(&mut self) {
         for item in &mut self.items {
-            if item.name == SULFURAS {
+            match item.into() {
+                ItemKind::Normal => Self::update_normal_item_quality(item),
+                ItemKind::Pass => Self::update_pass_item_quality(item),
+                ItemKind::Aging => Self::update_aging_item_quality(item),
                 // Legendary items never change
-                continue;
+                ItemKind::Legendary => {}
             }
-
-            if item.name != AGED_BRIE && item.name != BACKSTAGE_PASSES {
-                item.quality -= 1;
-            } else {
-                item.quality += 1;
-
-                if item.name == BACKSTAGE_PASSES {
-                    if item.sell_in < 11 {
-                        item.quality += 1;
-                    }
-
-                    if item.sell_in < 6 {
-                        item.quality += 1;
-                    }
-                }
-            }
-
-            if item.sell_in <= 0 {
-                if item.name != AGED_BRIE {
-                    if item.name != BACKSTAGE_PASSES {
-                        item.quality -= 1;
-                    } else {
-                        item.quality = 0;
-                    }
-                } else {
-                    item.quality += 1;
-                }
-            }
-
-            item.sell_in -= 1;
-            item.quality = item.quality.clamp(0, 50);
         }
+    }
+
+    fn update_normal_item_quality(item: &mut Item) {
+        if item.sell_in > 0 {
+            item.quality = (item.quality - 1).max(0);
+        } else {
+            item.quality = (item.quality - 2).max(0);
+        }
+        item.sell_in -= 1;
+    }
+
+    fn update_aging_item_quality(item: &mut Item) {
+        if item.sell_in > 0 {
+            item.quality = (item.quality + 1).min(50);
+        } else {
+            item.quality = (item.quality + 2).min(50);
+        }
+        item.sell_in -= 1;
+    }
+
+    fn update_pass_item_quality(item: &mut Item) {
+        if item.sell_in > 10 {
+            item.quality = (item.quality + 1).min(50);
+        } else if item.sell_in > 5 {
+            item.quality = (item.quality + 2).min(50);
+        } else if item.sell_in > 0 {
+            item.quality = (item.quality + 3).min(50);
+        } else {
+            item.quality = 0;
+        }
+        item.sell_in -= 1;
     }
 }
 

@@ -4,6 +4,8 @@ const AGED_BRIE: &str = "Aged Brie";
 const BACKSTAGE_PASSES: &str = "Backstage passes to a TAFKAL80ETC concert";
 const SULFURAS: &str = "Sulfuras, Hand of Ragnaros";
 
+const QUALITY_LIMIT: i32 = 50;
+
 pub struct Item {
     pub name: String,
     pub sell_in: i32,
@@ -83,20 +85,20 @@ impl GildedRose {
 
     fn update_aging_item_quality(item: &mut Item) {
         if item.sell_in > 0 {
-            item.quality = (item.quality + 1).min(50);
+            item.quality = (item.quality + 1).min(QUALITY_LIMIT);
         } else {
-            item.quality = (item.quality + 2).min(50);
+            item.quality = (item.quality + 2).min(QUALITY_LIMIT);
         }
         item.sell_in -= 1;
     }
 
     fn update_pass_item_quality(item: &mut Item) {
         if item.sell_in > 10 {
-            item.quality = (item.quality + 1).min(50);
+            item.quality = (item.quality + 1).min(QUALITY_LIMIT);
         } else if item.sell_in > 5 {
-            item.quality = (item.quality + 2).min(50);
+            item.quality = (item.quality + 2).min(QUALITY_LIMIT);
         } else if item.sell_in > 0 {
-            item.quality = (item.quality + 3).min(50);
+            item.quality = (item.quality + 3).min(QUALITY_LIMIT);
         } else {
             item.quality = 0;
         }
@@ -106,9 +108,7 @@ impl GildedRose {
 
 #[cfg(test)]
 mod tests {
-    use crate::gildedrose::{BACKSTAGE_PASSES, SULFURAS};
-
-    use super::{AGED_BRIE, GildedRose, Item};
+    use super::{AGED_BRIE, BACKSTAGE_PASSES, GildedRose, Item, QUALITY_LIMIT, SULFURAS};
 
     const DEX_VEST: &str = "+5 Dexterity Vest";
 
@@ -155,12 +155,12 @@ mod tests {
     #[test]
     fn quality_always_within_upper_limit() {
         // Aged brie quality will increase with time
-        let item = Item::new(AGED_BRIE, 10, 50);
+        let item = Item::new(AGED_BRIE, 10, QUALITY_LIMIT);
         let mut gilded_rose = GildedRose::new(vec![item]);
 
         gilded_rose.update_quality();
 
-        assert_eq!(gilded_rose.items[0].quality, 50);
+        assert_eq!(gilded_rose.items[0].quality, QUALITY_LIMIT);
     }
 
     #[test]

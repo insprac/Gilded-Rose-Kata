@@ -26,6 +26,25 @@ impl Display for Item {
     }
 }
 
+/// Represents the kind of `Item`, each item kind behaves differently within the `GildedRose`.
+pub enum ItemKind {
+    Normal,
+    Aging,
+    Pass,
+    Legendary,
+}
+
+impl From<Item> for ItemKind {
+    fn from(item: Item) -> Self {
+        match item.name.as_str() {
+            AGED_BRIE => Self::Aging,
+            BACKSTAGE_PASSES => Self::Pass,
+            SULFURAS => Self::Legendary,
+            _ => Self::Normal,
+        }
+    }
+}
+
 pub struct GildedRose {
     pub items: Vec<Item>,
 }

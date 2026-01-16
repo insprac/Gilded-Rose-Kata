@@ -113,4 +113,25 @@ mod tests {
 
         assert_eq!(gilded_rose.items[0].quality, 29);
     }
+
+    #[test]
+    fn quality_always_non_negative() {
+        let item = Item::new(DEX_VEST, 10, 0);
+        let mut gilded_rose = GildedRose::new(vec![item]);
+
+        gilded_rose.update_quality();
+
+        assert_eq!(gilded_rose.items[0].quality, 0);
+    }
+
+    #[test]
+    fn quality_always_within_upper_limit() {
+        // Aged brie quality will increase with time
+        let item = Item::new(AGED_BRIE, 10, 50);
+        let mut gilded_rose = GildedRose::new(vec![item]);
+
+        gilded_rose.update_quality();
+
+        assert_eq!(gilded_rose.items[0].quality, 50);
+    }
 }

@@ -3,6 +3,7 @@ use std::fmt::{self, Display};
 const AGED_BRIE: &str = "Aged Brie";
 const BACKSTAGE_PASSES: &str = "Backstage passes to a TAFKAL80ETC concert";
 const SULFURAS: &str = "Sulfuras, Hand of Ragnaros";
+const CONJURED: &str = "Conjured Mana Cake";
 
 const QUALITY_LIMIT: i32 = 50;
 
@@ -108,7 +109,7 @@ impl GildedRose {
 
 #[cfg(test)]
 mod tests {
-    use super::{AGED_BRIE, BACKSTAGE_PASSES, GildedRose, Item, QUALITY_LIMIT, SULFURAS};
+    use super::{AGED_BRIE, BACKSTAGE_PASSES, CONJURED, GildedRose, Item, QUALITY_LIMIT, SULFURAS};
 
     const DEX_VEST: &str = "+5 Dexterity Vest";
 
@@ -243,6 +244,27 @@ mod tests {
         let mut gilded_rose = GildedRose::new(vec![item]);
 
         gilded_rose.update_quality();
+
         assert_eq!(gilded_rose.items[0].quality, 0);
+    }
+
+    #[test]
+    fn conjured_quality_decreases_2x_per_day_before_sell_date() {
+        let item = Item::new(CONJURED, 10, 10);
+        let mut gilded_rose = GildedRose::new(vec![item]);
+
+        gilded_rose.update_quality();
+
+        assert_eq!(gilded_rose.items[0].quality, 8);
+    }
+
+    #[test]
+    fn conjured_quality_decreases_4x_per_day_after_sell_date() {
+        let item = Item::new(CONJURED, 0, 10);
+        let mut gilded_rose = GildedRose::new(vec![item]);
+
+        gilded_rose.update_quality();
+
+        assert_eq!(gilded_rose.items[0].quality, 6);
     }
 }

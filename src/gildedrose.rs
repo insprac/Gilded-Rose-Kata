@@ -90,5 +90,27 @@ impl GildedRose {
 
 #[cfg(test)]
 mod tests {
-    use super::{GildedRose, Item};
+    use super::{AGED_BRIE, GildedRose, Item};
+
+    const DEX_VEST: &str = "+5 Dexterity Vest";
+
+    #[test]
+    fn sell_in_decrements_each_day() {
+        let item = Item::new(DEX_VEST, 10, 30);
+        let mut gilded_rose = GildedRose::new(vec![item]);
+
+        gilded_rose.update_quality();
+
+        assert_eq!(gilded_rose.items[0].sell_in, 9);
+    }
+
+    #[test]
+    fn quality_decrements_each_day() {
+        let item = Item::new(DEX_VEST, 10, 30);
+        let mut gilded_rose = GildedRose::new(vec![item]);
+
+        gilded_rose.update_quality();
+
+        assert_eq!(gilded_rose.items[0].quality, 29);
+    }
 }

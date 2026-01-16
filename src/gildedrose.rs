@@ -36,51 +36,51 @@ impl GildedRose {
     }
 
     pub fn update_quality(&mut self) {
-        for i in 0..self.items.len() {
-            if self.items[i].name != AGED_BRIE && self.items[i].name != BACKSTAGE_PASSES {
-                if self.items[i].quality > 0 {
-                    if self.items[i].name != SULFURAS {
-                        self.items[i].quality = self.items[i].quality - 1;
+        for item in &mut self.items {
+            if item.name != AGED_BRIE && item.name != BACKSTAGE_PASSES {
+                if item.quality > 0 {
+                    if item.name != SULFURAS {
+                        item.quality = item.quality - 1;
                     }
                 }
             } else {
-                if self.items[i].quality < 50 {
-                    self.items[i].quality = self.items[i].quality + 1;
+                if item.quality < 50 {
+                    item.quality = item.quality + 1;
 
-                    if self.items[i].name == BACKSTAGE_PASSES {
-                        if self.items[i].sell_in < 11 {
-                            if self.items[i].quality < 50 {
-                                self.items[i].quality = self.items[i].quality + 1;
+                    if item.name == BACKSTAGE_PASSES {
+                        if item.sell_in < 11 {
+                            if item.quality < 50 {
+                                item.quality = item.quality + 1;
                             }
                         }
 
-                        if self.items[i].sell_in < 6 {
-                            if self.items[i].quality < 50 {
-                                self.items[i].quality = self.items[i].quality + 1;
+                        if item.sell_in < 6 {
+                            if item.quality < 50 {
+                                item.quality = item.quality + 1;
                             }
                         }
                     }
                 }
             }
 
-            if self.items[i].name != SULFURAS {
-                self.items[i].sell_in = self.items[i].sell_in - 1;
+            if item.name != SULFURAS {
+                item.sell_in = item.sell_in - 1;
             }
 
-            if self.items[i].sell_in < 0 {
-                if self.items[i].name != AGED_BRIE {
-                    if self.items[i].name != BACKSTAGE_PASSES {
-                        if self.items[i].quality > 0 {
-                            if self.items[i].name != SULFURAS {
-                                self.items[i].quality = self.items[i].quality - 1;
+            if item.sell_in < 0 {
+                if item.name != AGED_BRIE {
+                    if item.name != BACKSTAGE_PASSES {
+                        if item.quality > 0 {
+                            if item.name != SULFURAS {
+                                item.quality = item.quality - 1;
                             }
                         }
                     } else {
-                        self.items[i].quality = self.items[i].quality - self.items[i].quality;
+                        item.quality = item.quality - item.quality;
                     }
                 } else {
-                    if self.items[i].quality < 50 {
-                        self.items[i].quality = self.items[i].quality + 1;
+                    if item.quality < 50 {
+                        item.quality = item.quality + 1;
                     }
                 }
             }
